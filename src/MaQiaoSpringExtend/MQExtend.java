@@ -18,9 +18,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 /**
  * 注解方法，以确定哪些类的哪些方法可以向外提供服务以及参数的限制<br/>
  * <font color='red'>支持类的注解:@Component;@Scope("singleton");@Service</font><br/>
