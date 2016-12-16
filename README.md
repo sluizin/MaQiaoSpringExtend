@@ -4,4 +4,5 @@
  * 因为使用asm，所以暂时不支持继承注解<br/>
  * 如果两个方法值相同，具体哪个先运行[上帝安排]<br/>
  * <font color='red'>注意：严禁在此注解下的方法里使用MQExtendSystem，为了防止嵌套死循环[初步判断StackTraceElement]</font><br/>
- * 复杂度加高，把方法名和groupid的检索暂缓开发<br/><br/>
+ * 复杂度加高，把方法名和groupid的检索暂缓开发<br/>
+ <br/>
