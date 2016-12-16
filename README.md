@@ -6,3 +6,4 @@
  * <font color='red'>注意：严禁在此注解下的方法里使用MQExtendSystem，为了防止嵌套死循环[初步判断StackTraceElement]</font><br/>
  * 复杂度加高，把方法名和groupid的检索暂缓开发<br/>
  <br/>
+ 
