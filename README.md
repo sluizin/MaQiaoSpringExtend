@@ -1,3 +1,7 @@
+ *spring.xml配置文件中加入：<br/>
+ *<!-- 引入相应的上下文用于检索容器内的bean --><br/>
+ *<context:component-scan base-package="com.wangku.was.special.MaQiaoSpringExtend" /><br/>
+ *<br/>
  * 注解方法，以确定哪些类的哪些方法可以向外提供服务以及参数的限制<br/>
  * <font color='red'>支持类的注解:@Component;@Scope("singleton");@Service</font><br/>
  * 必须先注解类，再注解方法，否则无法找到此类的方法[先检索类是否含有注解，舍弃接口]<br/>
