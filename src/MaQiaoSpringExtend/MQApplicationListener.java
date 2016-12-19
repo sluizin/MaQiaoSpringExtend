@@ -46,16 +46,16 @@ public final class MQApplicationListener implements ApplicationListener<ContextR
 		if (openMQSpringExtend) {
 			System.out.println("MQ[Listener]putMQSpringExtendSystem --------------Start");
 			ApplicationContext  ac2= event.getApplicationContext();
-			MQSpringUtils.setApplicationContextClassAllow(ac2);			
+			MQUtils.setApplicationContextClassAllow(ac2);			
 			/* MQSpringExtendSystem */
-			MQSpring mqspring = new MQSpring(ac,sc);
+			MQApplicationcontext mqapplication = new MQApplicationcontext(ac,sc);
 			/*
 			mqspring.setApplicationcontextIOC(ac);//设置IOC容器
 			mqspring.setServletContext(sc);//设置Servlet容器提供的上下文
 			mqspring.setSearchRange(MQSpringConsts.ACC_Search_IOC+MQSpringConsts.ACC_Search_Base);
 			*/
-			mqspring.setSearchRange(MQSpringConsts.ACC_Search_IOC);
-			mqspring.initialization();
+			mqapplication.setSearchRange(MQConsts.ACC_Search_IOC);
+			mqapplication.initialization();
 			System.out.println("MQ[Listener]putMQSpringExtendSystem --------------E N D");
 		}
 

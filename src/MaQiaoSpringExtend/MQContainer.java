@@ -17,7 +17,7 @@ import MaQiaoSpringExtend.Element.ElementT;
  * @version 1.0
  * @since jdk1.7
  */
-public final class MQSpringExtendContainer {
+public final class MQContainer {
 	/**
 	 * 存放类对应多个对象的记录基础表
 	 */
@@ -30,6 +30,8 @@ public final class MQSpringExtendContainer {
 
 	//static final ElementT<String> mapMethodname = new ElementT<String>();
 	//static final ElementT<Integer> mapGroupid = new ElementT<Integer>();
+
+	static final MQCache cacheParam = new MQCache();
 
 	List<ElementMethod> getListByIdentifier(boolean matching, boolean ignoreCase, String... ObjArray) {
 		if (ObjArray.length == 0) return new ArrayList<ElementMethod>(0);
@@ -84,7 +86,6 @@ public final class MQSpringExtendContainer {
 		//mapMethodname.insertMap(e.getMethodName(), e);
 		//mapGroupid.insertMap(e.groupid, e);
 	}
-
 
 	static final void runElementMethod(final List<ElementMethod> list, final MQparameter parameter) {
 		if (parameter.identifier.order) {

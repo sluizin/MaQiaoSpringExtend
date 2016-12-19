@@ -13,7 +13,6 @@ import java.io.RandomAccessFile;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -35,18 +34,7 @@ import MaQiaoSpringExtend.Element.ElementParameter;
  * @version 1.0
  * @since jdk1.7
  */
-public final class MQSpringUtils {
-	/**
-	 * 判断此类是否含有过滤的注解
-	 * @param classzz Class< ? >
-	 * @return boolean
-	 */
-	static boolean isAnnotationfilterClass(final Class<?> classzz) {
-		if (classzz == null) return false;
-		for (int i = 0, len = MQSpringConsts.classAnnotationFilter.size(); i < len; i++)
-			if (classzz.isAnnotationPresent(MQSpringConsts.classAnnotationFilter.get(i))) return true;
-		return false;
-	}
+public final class MQUtils {
 
 	/**
 	 * 通过上下文按允许的注解组进行检索。含有扩展注解的，则提出保存
@@ -54,27 +42,14 @@ public final class MQSpringUtils {
 	 */
 	static void setApplicationContextClassAllow(ApplicationContext ac) {
 		if (ac == null) return;
-		for (int i = 0, len = MQSpringConsts.classAnnotationAllow.size(); i < len; i++) {
-			Map<String, Object> map = ac.getBeansWithAnnotation(MQSpringConsts.classAnnotationAllow.get(i));
+		for (int i = 0, len = MQConsts.classAnnotationAllow.size(); i < len; i++) {
+			Map<String, Object> map = ac.getBeansWithAnnotation(MQConsts.classAnnotationAllow.get(i));
 			for (String key : map.keySet()) {
 				Object obj = map.get(key);
-				MQWarning.show(0, MQSpringConsts.classAnnotationAllow.get(i).getName() + "[key:" + key + "]", obj.toString());
-				MQSpring.insertSpringExtendMapClass(obj);
+				MQWarning.show(0, MQConsts.classAnnotationAllow.get(i).getName() + "[key:" + key + "]", obj.toString());
+				MQApplicationcontext.insertSpringExtendMapClass(obj);
 			}
 		}
-	}
-
-	/**
-	 * 判断此类是否含有指定的注解
-	 * @param classzz Class< ? >
-	 * @return boolean
-	 */
-	static boolean isAnnotationAllowClass(Class<?> classzz) {
-		if (classzz == null) return false;
-		for (int i = 0, len = MQSpringConsts.classAnnotationAllow.size(); i < len; i++)
-			if (classzz.isAnnotationPresent(MQSpringConsts.classAnnotationAllow.get(i))) return true;
-		if (isAnnotationScopeSingleton(classzz)) return true;
-		return false;
 	}
 
 	/**
@@ -88,67 +63,11 @@ public final class MQSpringUtils {
 		for (String key : map.keySet()) {
 			Object obj = map.get(key);
 			MQWarning.show(0, "Scope.class[key:" + key + "]", obj.toString());
-			if (!isMQExtend(obj)) continue;
+			if (!MQUtilsAnno.isMQExtendClass(obj)) continue;
 			MQWarning.show(0, "Scope.class[key:" + key + "]", obj.toString());
-			MQSpring.insertSpringExtendMapClass(obj);
+			MQApplicationcontext.insertSpringExtendMapClass(obj);
 		}
 
-	}
-
-	/**
-	 * 判断此对象是否含有指定扩展注解
-	 * @param obj Object
-	 * @return boolean
-	 */
-	static boolean isMQExtend(Object obj) {
-		if (obj == null) return false;
-		return obj.getClass().isAnnotationPresent(MQExtend.class);
-	}
-
-	/**
-	 * 判断此类是否含有指定扩展注解
-	 * @param classzz Class< ? >
-	 * @return boolean
-	 */
-	static boolean isMQExtend(Class<?> classzz) {
-		if (classzz == null) return false;
-		return classzz.isAnnotationPresent(MQExtend.class);
-	}
-
-	/**
-	 * 判断此类是否含有Scope("singleton")<br/>
-	 * 默认没有为真，或 Scope("singleton") 为真
-	 * @param classzz Class< ? >
-	 * @return boolean
-	 */
-	static boolean isAnnotationScopeSingleton(Class<?> classzz) {
-		if (classzz == null) return false;
-		Class<? extends Annotation> classScope = Scope.class;
-		System.out.println("isScopeSingleton:" + classzz.getName());
-		if (classzz.isAnnotationPresent(classScope)) {
-			Annotation p = classzz.getAnnotation(classScope);
-			if (p == null) return true;
-			try {
-				Object obj = p.getClass().getDeclaredMethod("value").invoke(p);
-				if (obj == null) return true;
-				String objStr = (String) obj;
-				System.out.println("isScopeSingletonobj:" + objStr.trim());
-				if (objStr.trim().equalsIgnoreCase("singleton")) return true;
-				return false;
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			}
-			return true;
-		}
-		return true;
 	}
 
 	/**
@@ -158,9 +77,9 @@ public final class MQSpringUtils {
 	 */
 	static final boolean add(final Object obj) {
 		Class<?> clazz = obj.getClass();
-		if (!MQSpringExtendContainer.MQSpringExtendObjectMap.containsKey(clazz)) return false;
-		if (MQSpringExtendContainer.MQSpringExtendObjectMap.get(clazz).contains(obj)) return false;
-		MQSpringExtendContainer.MQSpringExtendObjectMap.get(clazz).add(obj);
+		if (!MQContainer.MQSpringExtendObjectMap.containsKey(clazz)) return false;
+		if (MQContainer.MQSpringExtendObjectMap.get(clazz).contains(obj)) return false;
+		MQContainer.MQSpringExtendObjectMap.get(clazz).add(obj);
 		return true;
 	}
 
@@ -174,12 +93,12 @@ public final class MQSpringUtils {
 		try {
 			for (Method method : methods) {
 				if (!method.isAccessible()) method.setAccessible(true);
-				if (method.isAnnotationPresent(MQExtend.class)) {
-					if (!MQSpringConsts.allowInputMethod(method)) continue;
+				if (MQUtilsAnno.isMQExtendMethod(method)) {
+					if (!MQConsts.allowInputMethod(method)) continue;
 					ElementMethod e = getEM(classzz, method);
-					if (MQSpringConsts.ACC_MQInitViewwarning) System.out.println("MQExtend->ElementMethod:" + e.toString());
-					MQSpringExtendContainer.MQSpringExtendMethodList.add(e);
-					MQSpringExtendContainer.setEM(e);
+					if (MQConsts.ACC_MQInitViewwarning) System.out.println("MQExtend->ElementMethod:" + e.toString());
+					MQContainer.MQSpringExtendMethodList.add(e);
+					MQContainer.setEM(e);
 				}
 			}
 		} catch (Exception e1) {
@@ -194,14 +113,16 @@ public final class MQSpringUtils {
 	 * @return ElementMethod
 	 */
 	static final ElementMethod getEM(final Class<?> classzz, final Method method) {
-		final Annotation p = method.getAnnotation(MQExtend.class);
 		final ElementMethod e = new ElementMethod();
 		e.classzz = classzz;
 		e.method = method;
 		try {
-			e.identifier = (String) p.getClass().getDeclaredMethod(MQSpringConsts.ACC_annotion.identifier).invoke(p);
-			e.explain = (String) p.getClass().getDeclaredMethod(MQSpringConsts.ACC_annotion.explain).invoke(p);
-			e.groupid = (Integer) p.getClass().getDeclaredMethod(MQSpringConsts.ACC_annotion.groupid).invoke(p);
+			Annotation p = method.getAnnotation(MQConsts.ACC_AnnotationMethod);
+			e.identifier = MQAnnotation.getString(p, MQConsts.ACC_annotion.identifier);
+			e.explain = MQAnnotation.getString(p, MQConsts.ACC_annotion.explain);
+			e.groupid = MQAnnotation.getInteger(p, MQConsts.ACC_annotion.groupid, 0);
+			//e.explain = (String) p.getClass().getDeclaredMethod(MQConsts.ACC_annotion.explain).invoke(p);
+			//e.groupid = (Integer) p.getClass().getDeclaredMethod(MQConsts.ACC_annotion.groupid).invoke(p);
 			Annotation[][] paraAnno = method.getParameterAnnotations();
 			String[] paraName = asmReadClass.getParaName(classzz, method);
 			Class<?>[] paraClassArray = method.getParameterTypes();
@@ -228,21 +149,17 @@ public final class MQSpringUtils {
 	static final ElementParameter getEP(final String panaName, final Annotation[] annoArray) {
 		if (panaName == null || panaName.equals("")) return null;
 		ElementParameter f = new ElementParameter();
-		boolean Null = true;
-		boolean use = false;
 		try {
 			for (int i = 0, len = annoArray.length; i < len; i++)
-				if (MQExtend.class.isInstance(annoArray[i])) {
-					use = true;
-					Null = (Boolean) annoArray[i].getClass().getDeclaredMethod(MQSpringConsts.ACC_annotion.Null).invoke(annoArray[i]);
+				if (MQConsts.ACC_AnnotationParameter.isInstance(annoArray[i])) {
+					f.p_useAnnotation = true;
+					f.p_allowNull = MQAnnotation.getBoolean(annoArray[i], MQConsts.ACC_annotion.Null, true);
 					break;
 				}
 
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		f.p_useAnnotation = use;
-		f.p_allowNull = Null;
 		f.p_name = panaName;
 		return f;
 	}
@@ -498,12 +415,12 @@ public final class MQSpringUtils {
 
 	@Deprecated
 	static final void showWarningRun(final String key, final Object value) {
-		if (MQSpringConsts.ACC_MQRunViewwarning) System.out.println(MQSpringConsts.ACC_MQRunHead + key + ":" + value.toString());
+		if (MQConsts.ACC_MQRunViewwarning) System.out.println(MQConsts.ACC_MQRunHead + key + ":" + value.toString());
 	}
 
 	@Deprecated
 	static final void showWarningInit(final String key, final Object value) {
-		if (MQSpringConsts.ACC_MQInitViewwarning) System.out.println(MQSpringConsts.ACC_MQInitHead + key + ":" + value.toString());
+		if (MQConsts.ACC_MQInitViewwarning) System.out.println(MQConsts.ACC_MQInitHead + key + ":" + value.toString());
 	}
 
 	/**

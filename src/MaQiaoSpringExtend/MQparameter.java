@@ -56,7 +56,7 @@ public final class MQparameter {
 	public static final MQparameter getMQparameterFromHttp(String http) {
 		if (!isConnect(http)) return null;
 		try {
-			return getMQparameterFromString(MQSpringUtils.readFile(new URL(http), "\n", false).toString());
+			return getMQparameterFromString(MQUtils.readFile(new URL(http), "\n", false).toString());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -259,6 +259,28 @@ public final class MQparameter {
 
 	public final void setSetupSystem(ClassSystem setupSystem) {
 		this.setupSystem = setupSystem;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((identifier == null) ? 0 : identifier.hashCode());
+		result = prime * result + ((parameterObjList == null) ? 0 : parameterObjList.hashCode());
+		result = prime * result + ((setupParameter == null) ? 0 : setupParameter.hashCode());
+		result = prime * result + ((setupSystem == null) ? 0 : setupSystem.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		MQparameter other = (MQparameter) obj;
+		if (!this.tojson().equals(other.tojson())) return false;
+		//System.out.println("cache.equals:"+this.tojson());
+		return true;
 	}
 
 }

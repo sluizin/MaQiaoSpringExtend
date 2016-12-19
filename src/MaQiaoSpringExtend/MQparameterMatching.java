@@ -163,7 +163,7 @@ public final class MQparameterMatching {
 		if (class1 == null || class2 == null) return false;
 		if (class1 == class2) return true;
 		if (class1.getName().equals(class2.getName())) return true;
-		if(class1.isInterface() && !class2.isInterface() && MQSpringUtils.isInterface(class2,class1))return true;
+		if(class1.isInterface() && !class2.isInterface() && MQUtils.isInterface(class2,class1))return true;
 		return false;
 	}
 }

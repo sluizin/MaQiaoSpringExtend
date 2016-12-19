@@ -5,11 +5,8 @@ package MaQiaoSpringExtend;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
 import javax.servlet.ServletContext;
-
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Scope;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -20,7 +17,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @version 1.0
  * @since jdk1.7
  */
-public final class MQSpring {
+public final class MQApplicationcontext {
 	int searchRange = 0;
 	/**
 	 * 本地运行环境容器
@@ -38,7 +35,7 @@ public final class MQSpring {
 	/**
 	 * 构造函数
 	 */
-	public MQSpring() {
+	public MQApplicationcontext() {
 		System.out.println("MQSpringExtend:structure");
 		structureInit();
 	}
@@ -46,7 +43,7 @@ public final class MQSpring {
 	/**
 	 * 构造函数
 	 */
-	public MQSpring(ApplicationContext ac, ServletContext sc) {
+	public MQApplicationcontext(ApplicationContext ac, ServletContext sc) {
 		System.out.println("MQSpringExtend:structure");
 		structureInit();
 		if (ac != null) {
@@ -74,13 +71,13 @@ public final class MQSpring {
 	 * 启动检索
 	 */
 	public void initialization() {
-		if (MQSpringExtendContainer.MQSpringExtendMethodList.size() > 0) return;//如果输出的结果集非空，则跳出
+		if (MQContainer.MQSpringExtendMethodList.size() > 0) return;//如果输出的结果集非空，则跳出
 		System.out.println("MQSpring:init()--START");
 		/* 通过注解检索所有范围内的类，并存入容器中 */
 		search();
 		//searchClassAnnotation();
 		
-		Collections.sort(MQSpringExtendContainer.MQSpringExtendMethodList);  //按照升序排序
+		Collections.sort(MQContainer.MQSpringExtendMethodList);  //按照升序排序
 		/* 通过范围检索所有对象，并按照注解类存入容器中 */
 		//searchObject();
 		//启动守护线程
@@ -95,13 +92,13 @@ public final class MQSpring {
 		/*
 		 * 在ioc中检索对象
 		 */
-		if (MQSpringUtils.shift(searchRange, MQSpringConsts.ACC_Search_IOC)) {
+		if (MQUtils.shift(searchRange, MQConsts.ACC_Search_IOC)) {
 			searchIOC();
 		}
 		/*
 		 * 在base中检索对象
 		 */
-		if (MQSpringUtils.shift(searchRange, MQSpringConsts.ACC_Search_Base)) {
+		if (MQUtils.shift(searchRange, MQConsts.ACC_Search_Base)) {
 			searchBase();
 		}
 	}
@@ -118,10 +115,10 @@ public final class MQSpring {
 			obj = applicationcontextIOC.getBean(name);
 			classzz = obj.getClass();
 			/* 检索这个对象的接口 */
-			if (MQSpringUtils.isMQExtend(classzz)){
+			if (MQUtilsAnno.isMQExtendClass(classzz)){
 				MQWarning.show(0,"Search Class from ioc[Exist]", name);
 				insertSpringExtendMapClass(classzz);
-				if (MQSpringExtendContainer.MQSpringExtendObjectMap.containsKey(classzz)) {
+				if (MQContainer.MQSpringExtendObjectMap.containsKey(classzz)) {
 					insertSpringExtendMapObject(obj);
 				}
 			}
@@ -140,10 +137,10 @@ public final class MQSpring {
 				MQWarning.show(0,"Search Class from base", name);
 				obj = applicationcontextBase.getBean(name);
 				classzz = obj.getClass();
-				if (MQSpringUtils.isMQExtend(classzz)) {
+				if (MQUtilsAnno.isMQExtendClass(classzz)) {
 					MQWarning.show(0,"Search Class from base[Exist]", name);
 					//insertSpringExtendMapClass(classzz);
-					if (MQSpringExtendContainer.MQSpringExtendObjectMap.containsKey(classzz)){
+					if (MQContainer.MQSpringExtendObjectMap.containsKey(classzz)){
 						insertSpringExtendMapObject(obj);
 					}
 				}
@@ -162,23 +159,22 @@ public final class MQSpring {
 	}
 	/**
 	 * 插入类，如果发现重复跳出
-	 * @param classzz Class< ? >
+	 * @param classzz Class&lt;?&gt;
 	 */
 	static void insertSpringExtendMapClass(final Class<?> classzz) {
-		if (MQSpringExtendContainer.MQSpringExtendObjectMap.containsKey(classzz))return;
-		if(MQSpringUtils.isAnnotationfilterClass(classzz)) return;
-		if(!MQSpringUtils.isAnnotationAllowClass(classzz))return;
-		if(!MQSpringUtils.isMQExtend(classzz))return;
-		/* 
-		 * 类注解中，含有@Scope("singleton") 或没有@Scope注解 
-		 * 系统只支持单例
-		  */
-		if(!MQSpringUtils.isAnnotationScopeSingleton(classzz))return;
-		if (MQSpringConsts.ACC_MQInitViewwarning)System.out.println("-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
+		/* 判断这个类是否含有本系统的扩展注解，没有，则退出 */
+		if(!MQUtilsAnno.isMQExtendClass(classzz))return;
+		/* 如果已经存在这个类，则退出 */
+		if (MQContainer.MQSpringExtendObjectMap.containsKey(classzz))return;
+		/* 判断这个类是否含有过滤注解的类，如果有，则退出 */
+		if(MQUtilsAnno.isAnnotationfilterClass(classzz)) return;
+		/* 判断这个是否含有指定允许的注解，如果没有，则退出 */
+		if(!MQUtilsAnno.isAnnotationAllowClass(classzz))return;
+		if (MQConsts.ACC_MQInitViewwarning)System.out.println("-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
 		MQWarning.show(0,"insert Class", classzz.getName());
-		MQSpringExtendContainer.MQSpringExtendObjectMap.put(classzz,new ArrayList<Object>());
-		MQSpringUtils.splitclassMethod(classzz);
-		if (MQSpringConsts.ACC_MQInitViewwarning)System.out.println("-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
+		MQContainer.MQSpringExtendObjectMap.put(classzz,new ArrayList<Object>());
+		MQUtils.splitclassMethod(classzz);
+		if (MQConsts.ACC_MQInitViewwarning)System.out.println("-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
 	}
 
 
@@ -189,9 +185,9 @@ public final class MQSpring {
 	static void insertSpringExtendMapObject(Object obj) {
 		if (obj == null) return;
 		Class<?> classzz = obj.getClass();
-		if (!MQSpringExtendContainer.MQSpringExtendObjectMap.containsKey(classzz)) return;
+		if (!MQContainer.MQSpringExtendObjectMap.containsKey(classzz)) return;
 		MQWarning.show(0,"insert Object", obj.toString());
-		MQSpringUtils.add(obj);
+		MQUtils.add(obj);
 	}
 
 	public final ApplicationContext getApplicationcontextIOC() {

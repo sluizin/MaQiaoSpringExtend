@@ -53,7 +53,7 @@ public final class Element {
 			 * else MQWarning.show("arrayObject["+i+"]", "null");
 			 */
 			if (!method.isAccessible()) method.setAccessible(true);
-			List<Object> list = MQSpringExtendContainer.MQSpringExtendObjectMap.get(classzz);
+			List<Object> list = MQContainer.MQSpringExtendObjectMap.get(classzz);
 			if (list == null || list.size() == 0) return;
 			if (parameter.setupSystem.allowMulti) {
 				Run(arrayObject, list.toArray());
@@ -416,7 +416,7 @@ public final class Element {
 			//MQWarning.show("search key", key);
 			for (T key1 : map.keySet()) {
 				key2 = (String) key1;
-				if (MQSpringUtils.checkStandard(matching, ignoreCase, key2, key)) {
+				if (MQUtils.checkStandard(matching, ignoreCase, key2, key)) {
 					//MQWarning.show("Search->map.key", key2 + " --- keyfind:" + key);
 					list.addAll(map.get(key1));
 				}
@@ -439,7 +439,7 @@ public final class Element {
 			String key2 = "";
 			for (T key1 : map.keySet()) {
 				key2 = (String) key1;
-				if (MQSpringUtils.checkStandard(matching, ignoreCase, key2, arrayKey)) {
+				if (MQUtils.checkStandard(matching, ignoreCase, key2, arrayKey)) {
 					//MQWarning.show("Search Result->map.key", key2);
 					list.addAll(map.get(key1));
 				}

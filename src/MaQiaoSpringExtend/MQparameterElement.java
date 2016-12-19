@@ -50,6 +50,30 @@ public class MQparameterElement {
 			return builder.toString();
 		}
 
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((array == null) ? 0 : array.hashCode());
+			result = prime * result + (matching ? 1231 : 1237);
+			result = prime * result + (order ? 1231 : 1237);
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			ClassString other = (ClassString) obj;
+			if (array == null) {
+				if (other.array != null) return false;
+			} else if (!array.equals(other.array)) return false;
+			if (matching != other.matching) return false;
+			if (order != other.order) return false;
+			return true;
+		}
+
 		public final boolean isMatching() {
 			return matching;
 		}
@@ -115,6 +139,27 @@ public class MQparameterElement {
 			this.ignoreCase = ignoreCase;
 		}
 
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + (allowMulti ? 1231 : 1237);
+			result = prime * result + (ignoreCase ? 1231 : 1237);
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			ClassSystem other = (ClassSystem) obj;
+			if (allowMulti != other.allowMulti) return false;
+			if (ignoreCase != other.ignoreCase) return false;
+			return true;
+		}
+		
+
 	}
 
 	/**
@@ -158,6 +203,26 @@ public class MQparameterElement {
 			this.allowNull = allowNull;
 		}
 
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + (allowNull ? 1231 : 1237);
+			result = prime * result + (isMulti ? 1231 : 1237);
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			ClassParameter other = (ClassParameter) obj;
+			if (allowNull != other.allowNull) return false;
+			if (isMulti != other.isMulti) return false;
+			return true;
+		}
+
 	}
 
 	/**
@@ -198,5 +263,28 @@ public class MQparameterElement {
 			return builder.toString();
 		}
 
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((obj == null) ? 0 : obj.hashCode());
+			result = prime * result + ((variable == null) ? 0 : variable.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (getClass() != obj.getClass()) return false;
+			ClassParameterObject other = (ClassParameterObject) obj;
+			if (this.obj == null) {
+				if (other.obj != null) return false;
+			} else if (!this.obj.equals(other.obj)) return false;
+			if (variable == null) {
+				if (other.variable != null) return false;
+			} else if (!variable.equals(other.variable)) return false;
+			return true;
+		}
 	}
 }

@@ -84,7 +84,7 @@ public final class MQWarning {
 	}
 
 	 static final void show(final int state, final String key, final Object value) {
-		if (state == 0 && MQSpringConsts.ACC_MQInitViewwarning) System.out.println(MQSpringConsts.ACC_MQInitHead + key + ":" + (value == null ? "Null" : value.toString()));
-		if (state == 1 && MQSpringConsts.ACC_MQRunViewwarning) System.out.println(MQSpringConsts.ACC_MQRunHead + key + ":" + (value == null ? "Null" : value.toString()));
+		if (state == 0 && MQConsts.ACC_MQInitViewwarning) System.out.println(MQConsts.ACC_MQInitHead + key + ":" + (value == null ? "Null" : value.toString()));
+		if (state == 1 && MQConsts.ACC_MQRunViewwarning) System.out.println(MQConsts.ACC_MQRunHead + key + ":" + (value == null ? "Null" : value.toString()));
 	}
 }

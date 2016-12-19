@@ -10,8 +10,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.web.servlet.ModelAndView;
-
 import sun.misc.Unsafe;
 
 /**
@@ -20,7 +18,7 @@ import sun.misc.Unsafe;
  * @version 1.0
  * @since jdk1.7
  */
-public final class MQSpringConsts {
+public final class MQConsts {
 	/** 是否允许调用static方法[暂时不开发静态方法的调用] */
 	static final boolean ACC_allowStatic = false;
 	/** 是否允许调用public方法 */
@@ -51,6 +49,8 @@ public final class MQSpringConsts {
 		if (!ACC_allowPublic && Modifier.isPublic(modifier)) return false;
 		return true;
 	}
+	/** 缓存时间 */
+	public static long cacheParamSize=60 * 1000;//1份钟
 	/**
 	 * 判断Method是否需要提出，按方法
 	 * @param modifier int
@@ -76,6 +76,10 @@ public final class MQSpringConsts {
 	 */
 	public static final int ACC_Search_Base = 4;
 
+	/** 设置类、方法、参数 各需要定义的注解类 */
+	static final Class<? extends Annotation> ACC_AnnotationClass =MQExtendClass.class;
+	static final Class<? extends Annotation> ACC_AnnotationMethod=MQExtendMethod.class;
+	static final Class<? extends Annotation> ACC_AnnotationParameter=MQExtendParam.class;
 	/**
 	 * 过滤Class中含有的特别注解，例如：Controller等<br/>
 	 * 结果是含有这些注解的类不进入容器，与springmvc等分离
@@ -115,11 +119,13 @@ public final class MQSpringConsts {
 		String Null = "Null";
 	}
 	public static final Unsafe UNSAFE;
+	static long lockedMQCacheStateOffset = 0L;
 	static {
 		try {
 			final Field field = Unsafe.class.getDeclaredField("theUnsafe");
 			field.setAccessible(true);
 			UNSAFE = (Unsafe) field.get(null);
+			lockedMQCacheStateOffset = UNSAFE.objectFieldOffset(MQCache.class.getDeclaredField("state"));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
