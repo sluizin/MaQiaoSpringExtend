@@ -3,18 +3,11 @@
  */
 
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-
-//import com.wangku.was.categorynet.common.controller.SiteBaseController;
-import com.wangku.was.special.MaQiaoSpringExtend.MQRUN;
-import com.wangku.was.special.MaQiaoSpringExtend.MQparameter;
-import com.wangku.was.special.MaQiaoSpringExtend.MQparameterElement.ClassParameterObject;
+import MaQiao.MaQiaoSpringExtend.MQRUN;
+import MaQiao.MaQiaoSpringExtend.parameter.ParameterMapmodel;
 
 /**
  *   extends SiteBaseController
@@ -24,18 +17,15 @@ import com.wangku.was.special.MaQiaoSpringExtend.MQparameterElement.ClassParamet
  */
 @Controller
 public class Test{
-	@RequestMapping({ "/Test"})
-	public ModelAndView test1(ModelAndView mav){
-		String urlfile="http://192.168.1.98:90/static/zhuanti/MQparameterJson/test.txt";
-		//MQparameter e = MQparameter.getMQparameterFromHttp(urlfile);
-		Map<String, Object> model= new HashMap<String,Object>();
-		model.put("testing....", "ok");
-		model.put("change", 10);
-		//e.addVariableObj(model,"model");
-		MQparameter f=MQparameter.getMQparameterFromHttp(urlfile,new ClassParameterObject("model", model));
-		System.out.println("model::::"+model.toString());
-		MQRUN.run(f);
-		mav.getModel().put("model", model);
+	@RequestMapping({ "/Test3"})
+	public ModelAndView test3(ModelAndView mav){
+		String jsonFile="http://192.168.1.98:90/static/zhuanti/MQparameterJson/test.txt";
+		ParameterMapmodel f=new ParameterMapmodel(jsonFile);
+		f.getModel().put("first", "go...");
+		int a=55;
+		f.getModel().put("size", a);
+		MQRUN.staticRun(f);
+		mav.getModel().put("model", f.getModel());
 		mav.setViewName("/ACCzhuanti/Test/index");
 		return mav;
 	}
