@@ -1,3 +1,4 @@
+ #针对Spring扩展
  *通过json控制运行各个类的各个方法的顺序，并得到结果<br/>
  *spring.xml配置文件中加入：<code><pre>
  &lt;!-- 引入相应的上下文用于检索容器内的bean -->
@@ -13,10 +14,10 @@
  * 说明：<br/>
  * web.xml文件中加入maven环境变量：<br/>
 <code><pre>
-	<context-param>    
-    	<param-name>spring.profiles.active</param-name>    
-    	<param-value>dev</param-value><!-- maven运行时：${package.environment} -->    
-	</context-param> 
+	&lt;context-param>    
+    	&lt;param-name>spring.profiles.active&lt;/param-name>    
+    	&lt;param-value>dev&lt;/param-value>&lt;!-- maven运行时：${package.environment} -->    
+	&lt;/context-param> 
 </pre></code>
  * 在类、方法、方法参数上加上各自的注解：
  <code><pre>
@@ -52,7 +53,7 @@
 	无参数注解：顺序 > 类型 > null
 	
 	详情请参考注解说明
-
+	2017-02-07:增加extendBean目录里的对象与接口，因为接口的注解无法继承，所以只是空接口，另有父类可以直接继承。
  </pre></code>
  <code><pre>
  附录Json:
